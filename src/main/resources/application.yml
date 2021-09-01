@@ -1,0 +1,71 @@
+jwt:
+  secret: javainuse
+server:
+  error:
+    include-exception: true
+    include-message: always
+    include-stacktrace: never
+spring:
+  application:
+    name: jwt-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    initialization-mode: always
+    password: ${DBPASSWORD}
+    url: jdbc:mysql://${USERJWT_HOSTNAME}:3306/${USER_BASE}?useSSL=false
+    username: ${DBUSERNAME}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+      - id: client-service
+        uri: lb://client-service
+        predicates:
+         - Path=/api/client/**
+      - id: chambre-service
+        uri: lb://chambre-service
+        predicates:
+         - Path=/api/rooms/**
+      - id: consommation-service
+        uri: lb://consommation-service
+        predicates:
+         - Path=/api/consommation/**
+      - id: reservation-service
+        uri: lb://reservation-service
+        predicates:
+         - Path=/api/reservation/**
+      - id: facture-service
+        uri: lb://facture-service
+        predicates:
+         - Path=/api/facture/**
+      - id: typechambre-service
+        uri: lb://typechambre-service
+        predicates:
+         - Path=/api/typechambres/**
+      - id: hotel-service
+        uri: lb://hotel-service
+        predicates:
+         - Path=/api/hotel/**
+      - id: image-service
+        uri: lb://image-service
+        predicates:
+         - Path=/image/**
+       
+eureka:
+  client:
+   registerWithEureka: true
+   fetchRegistry: true
+   service-url:
+      defaultZone: https://user:samysamy@eurekasecond.herokuapp.com/eureka/
+  instance:
+    hostname: ${DOMAIN_NAME}
+    securePortEnabled: true
+    nonSecurePortEnabled: false
+    homePageUrl: https://sanhoteljwtgat.herokuapp.com
